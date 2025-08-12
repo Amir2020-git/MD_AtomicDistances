@@ -1,7 +1,7 @@
 start_time = time.time()
 
 #coordinateFile = open("/Users/amiromranpoor/Downloads/PhD-data/Tim_MD_Bulk/Output/md.xyz", "r")
-coordinateFile = open("/Users/amiromranpoor/Downloads/RDF_Configs/42_7936_1-ns/structure.lammpstrj_42_7936.xyz", "r")
+coordinateFile = open("MD_trajectory.xyz", "r")
 
 stepNumber = 0
 #totalSteps = 500
