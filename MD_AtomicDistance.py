@@ -1,6 +1,5 @@
 start_time = time.time()
 
-#coordinateFile = open("/Users/amiromranpoor/Downloads/PhD-data/Tim_MD_Bulk/Output/md.xyz", "r")
 coordinateFile = open("MD_trajectory.xyz", "r")
 
 stepNumber = 0
