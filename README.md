@@ -1,2 +1,9 @@
-# MD_AtomicDistances
-Take MD trajectory as input and extract interatomic distances as a function of time
+# XYZ Trajectory Distance Calculator
+
+This Python script reads a molecular dynamics trajectory in XYZ format and calculates the Euclidean distance between two specified atoms for every simulation step.
+
+Features
+- Parses multi-frame .xyz trajectory files
+- Computes the distance between two atom indices (default: 4024 and 331)
+- Handles large trajectories without external dependencies
+- Reports the number of frames processed and total runtime
