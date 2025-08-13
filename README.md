@@ -4,6 +4,6 @@ This Python script reads a molecular dynamics trajectory in XYZ format and calcu
 
 Features
 - Parses multi-frame .xyz trajectory files
-- Computes the distance between two atom indices (default: 4024 and 331)
+- Computes the distance between two atom indices 
 - Handles large trajectories without external dependencies
 - Reports the number of frames processed and total runtime
