@@ -1,96 +1,58 @@
-start_time = time.time()
+import math
+import time
 
-coordinateFile = open("MD_trajectory.xyz", "r")
 
-stepNumber = 0
-#totalSteps = 500
-coordinates = []
-for lineIndex, line in enumerate(coordinateFile, start=0):
-    if lineIndex == 0:
-        atomNumber = int(line.rstrip())
-        step = []
-        coordinates.append(step)
-    if (lineIndex - stepNumber * (atomNumber + 2)) > 1 and (lineIndex - stepNumber * (atomNumber + 2)) < (atomNumber + 2):
-            elements = line.split()
-            atomIndex = lineIndex - stepNumber * (atomNumber + 2) - 2
-            for elementIndex, element in enumerate(elements, start=0):
-                atom = []
-                coordinates[stepNumber].append(atom)
-                if elementIndex == 0:
-                    coordinates[stepNumber][atomIndex].append(element)
-                else:
-                    coordinates[stepNumber][atomIndex].append(float(element))
-    if (lineIndex - stepNumber * (atomNumber + 2) == (atomNumber + 2)):
-        step = []
-        coordinates.append(step)
-        stepNumber += 1
-        # if stepNumber == totalSteps:
-        #     break
-coordinateFile.close()
-print ("Number of steps=", stepNumber)
-#print (coordinates[0][10])
+def calculate_distance(coord_a, coord_b):
+    """Return Euclidean distance between two 3D coordinates."""
+    return math.sqrt(
+        (coord_a[0] - coord_b[0]) ** 2 +
+        (coord_a[1] - coord_b[1]) ** 2 +
+        (coord_a[2] - coord_b[2]) ** 2
+    )
 
-distance = []
-#centerOfMassY = []
-#centerOfMassZ = []
-#mass = 0
 
-#print (coordinates[0][150])
-#define a and b
-a=4024
-b=331
-print("Distance between",coordinates[0][a][0],"and", coordinates[0][b][0] )
-print("Distance between",a,"and", b )
-#for i in range(stepNumber):
-#for i in range(2000):
-for i in range(0, 1000, 1):
+if __name__ == "__main__":
+    start_time = time.time()
 
-    C_X = 0
-    C_Y = 0
-    C_Z = 0
-    O_X = 0
-    O_Y = 0
-    O_Z = 0
-    #mass = 0
-    Distance = 0
-    #for j in range(atomNumber):
-        #if coordinates[i][atomNumber-9][0] == "C":
-         #   if coordinates[i][atomNumber-1][0] == "O":
-    C_X = coordinates[i][a][1]
-    C_Y = coordinates[i][a][2]
-    C_Z = coordinates[i][a][3]
-               # print( coordinates[i][atomNumber-9][0],coordinates[i][atomNumber-9][1],coordinates[i][atomNumber-9][2],coordinates[i][atomNumber-9][3])
+    # Configuration
+    xyz_file = "MD_trajectory.xyz"
+    atom_a_index = 4024
+    atom_b_index = 331
 
-    O_X =  coordinates[i][b][1]
-    O_Y =  coordinates[i][b][2]
-    O_Z =  coordinates[i][b][3]
+    coordinates = []
+    step_number = 0
 
-    Distance = math.sqrt( ((C_X - O_X)**2)+((C_Y - O_Y)**2)+((C_Z - O_Z)**2) )
-           # mass += 16.0
-        #elif coordinates[i][j][0] == "H":
-            #coMX += coordinates[i][j][1]
-           # coMY += coordinates[i][j][2]
-            #coMZ += coordinates[i][j][3]
-            #mass += 1.0
-    distance.append(Distance)
-    #centerOfMassY.append(coMY/mass)
-    #centerOfMassZ.append(coMZ/mass)
+    with open(xyz_file, "r") as coordinate_file:
+        for line_index, line in enumerate(coordinate_file):
+            # Determine position within current frame
+            if line_index == 0:
+                atom_number = int(line.strip())
+                coordinates.append([])
 
-# xdistance = (coordinates[0][0][1] - coordinates[1][0][1])**2
-# ydistance = (coordinates[0][0][2]-coordinates[1][0][2])**2
-# zdistance = (coordinates[0][0][3]-coordinates[1][0][3])**2
-# distance = math.sqrt(xdistance + ydistance + zdistance)
-# print distance
+            pos_in_block = line_index - step_number * (atom_number + 2)
 
-# result = open("data.dat", "w")
-# for i in range(stepNumber):
-#     result.write(str(coordinates[i][0][1]) + " " + str(coordinates[i][0][2]) + "\n")
-# result.close()
+            if 1 < pos_in_block < (atom_number + 2):
+                parts = line.split()
+                atom = [parts[0], float(parts[1]), float(parts[2]), float(parts[3])]
+                coordinates[step_number].append(atom)
 
-#result = open("Distance.dat", "w")
-#for i in range(stepNumber):
-#    result.write(str(i*0.5) + " " + str(distance[i]) + "\n")
-#result.close()
+            elif pos_in_block == (atom_number + 2):
+                coordinates.append([])
+                step_number += 1
 
-elapsed_time = time.time() - start_time
-print ('Elapsed time = %f seconds ' % elapsed_time)
+    if len(coordinates[step_number]) == atom_number:
+        step_number += 1
+
+    print("Number of steps =", step_number)
+    print(f"Distance between {coordinates[0][atom_a_index][0]} "
+          f"and {coordinates[0][atom_b_index][0]}")
+    print(f"Distance between indices {atom_a_index} and {atom_b_index}")
+
+    distances = []
+    for i in range(step_number):
+        coord_a = tuple(coordinates[i][atom_a_index][1:])
+        coord_b = tuple(coordinates[i][atom_b_index][1:])
+        distances.append(calculate_distance(coord_a, coord_b))
+
+    elapsed_time = time.time() - start_time
+    print('Elapsed time = %.3f seconds' % elapsed_time)
